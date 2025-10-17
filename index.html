@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TARA PRE STUDY TA</title>
+  <style>
+    :root{ --bg:#0f172a; --card:#0b1220; --accent:#ffd166; --muted:#9aa6bf }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:linear-gradient(180deg,#071029 0%, #091233 60%);
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:2rem;
+    }
+
+    .card{
+      width:100%;
+      max-width:920px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:18px;
+      padding:4rem 2.5rem;
+      text-align:center;
+      box-shadow:0 8px 30px rgba(2,6,23,0.6);
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+    }
+
+    h1{
+      margin:0;
+      font-size: clamp(28px, 6vw, 56px);
+      letter-spacing: 0.06em;
+      line-height:1.02;
+      color:var(--accent);
+      text-shadow:0 6px 20px rgba(0,0,0,0.6);
+    }
+
+    .bottom-bar{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:28px;
+      z-index:60;
+    }
+
+    button#uhmm{
+      background:transparent;
+      border:2px solid rgba(255,209,102,0.12);
+      color:var(--accent);
+      padding:14px 28px;
+      font-weight:700;
+      border-radius:999px;
+      backdrop-filter: blur(6px);
+      cursor:pointer;
+      transition:transform .18s ease, box-shadow .18s ease;
+      box-shadow:0 6px 18px rgba(1,2,6,0.45);
+      font-size:16px;
+    }
+    button#uhmm:active{ transform:scale(.98) }
+
+ 
+    .video-overlay{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg, rgba(2,6,23,0.6), rgba(2,6,23,0.8));
+      z-index:50;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .28s ease;
+    }
+    .video-overlay.show{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .video-wrap{
+      width:min(900px, 94%);
+      background:var(--card);
+      border-radius:12px;
+      padding:12px;
+      box-shadow:0 20px 60px rgba(1,6,20,0.6);
+      transform:translateY(10px);
+    }
+
+    video{
+      width:100%;
+      height:auto;
+      display:block;
+      border-radius:8px;
+      background:black;
+    }
+
+    .controls{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-top:8px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .btn-close{
+      background:transparent;
+      border:0;
+      color:var(--muted);
+      font-weight:700;
+      cursor:pointer;
+      padding:8px 12px;
+      border-radius:8px;
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      *{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="card" role="main">
+    <h1>TARA PRE STUDY</h1>
+  </div>
+
+  <div class="bottom-bar">
+    <button id="uhmm" aria-controls="studyVideo" aria-expanded="false">UHMM</button>
+  </div>
+
+ 
+  <div id="overlay" class="video-overlay" aria-hidden="true">
+    <div class="video-wrap" role="dialog" aria-modal="true" aria-label="Study video">
+      <video id="studyVideo" controls preload="metadata" playsinline>
+        <source src="C:\Users\karl\Downloads\c9c1a318-8703-4858-a94c-24815307a9b9.mp4" type="video/mp4">
+      
+      </video>
+      <div class="controls">
+        <span class="meta">Study clip</span>
+        <div>
+          <button id="closeBtn" class="btn-close">CLOSE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const btn = document.getElementById('uhmm');
+    const overlay = document.getElementById('overlay');
+    const video = document.getElementById('studyVideo');
+    const closeBtn = document.getElementById('closeBtn');
+
+    function showVideo(){
+      overlay.classList.add('show');
+      overlay.setAttribute('aria-hidden','false');
+      btn.setAttribute('aria-expanded','true');
+      video.currentTime = 0;
+      video.play().catch(()=>{});
+    }
+
+    function hideVideo(){
+      overlay.classList.remove('show');
+      overlay.setAttribute('aria-hidden','true');
+      btn.setAttribute('aria-expanded','false');
+      try{ video.pause(); }catch(e){}
+    }
+
+    btn.addEventListener('click', ()=>{
+      const isVisible = overlay.classList.contains('show');
+      if(isVisible) hideVideo(); else showVideo();
+    });
+
+    closeBtn.addEventListener('click', hideVideo);
+    overlay.addEventListener('click', (e)=>{ if(e.target === overlay) hideVideo(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && overlay.classList.contains('show')) hideVideo(); });
+  </script>
+</body>
+</html>
